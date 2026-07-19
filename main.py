@@ -20,4 +20,12 @@ subprocess.run([
 model = whisper.load_model("tiny")
 result = model.transcribe("audio.wav")
 
-print(result["text"])
+# List of dictionaries for each chunk 
+segments = []
+for seg in result["segments"]:
+    segments.append({
+        "start": round(seg["start"], 2),
+        "end": round(seg["end"], 2),
+        "text": seg["text"].strip()
+    })
+
