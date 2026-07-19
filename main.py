@@ -2,6 +2,8 @@ import subprocess
 import whisper
 import json
 
+NUMBER_OF_CLIPS = 3
+
 '''
 Extracts the audio track from video.mp4 and saves it as audio.wav,
 converted to the format (16kHz, mono)
@@ -31,3 +33,17 @@ for seg in result["segments"]:
 
 with open("transcript.json", "w") as f:
     json.dump(segments, f, indent=2)
+    segments = json.load(f)
+
+# Sort by video length
+segments_by_length = sorted(
+    segments,
+    key=lambda seg: seg["end"] - seg["start"],
+    reverse=True
+)
+
+# Take the top 'N' longest segments
+best_moments = segments_by_length[0:NUMBER_OF_CLIPS]
+
+# Put them back in chronological order
+best_moments = sorted(best_moments, key=lambda seg: seg["start"])
