@@ -19,25 +19,25 @@ subprocess.run([
     "audio.wav"             
 ])
 
-# Load model and transcribe audio to text
-model = whisper.load_model("base")
-result = model.transcribe("audio.wav")
-
-# List of dictionaries for each chunk 
-segments = []
-for seg in result["segments"]:
-    segments.append({
-        "start": round(seg["start"], 2),
-        "end": round(seg["end"], 2),
-        "text": seg["text"].strip()
-    })
-
-
-
-
 if Path("transcript.json").exists():
-    print("transcript.json already exists — skipping save so it doesn't get overwritten.")
+    print("transcript.json already exists — Loading...")
+    with open("transcript.json") as f:
+        segments = json.load(f)
+
 else:
+    # Load model and transcribe audio to text
+    model = whisper.load_model("base")
+    result = model.transcribe("audio.wav")
+
+    # List of dictionaries for each chunk 
+    segments = []
+    for seg in result["segments"]:
+        segments.append({
+            "start": round(seg["start"], 2),
+            "end": round(seg["end"], 2),
+            "text": seg["text"].strip()
+        })
+
     with open("transcript.json", "w") as f:
         json.dump(segments, f, indent=2)
     print("Saved new transcript.json")
