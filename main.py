@@ -29,3 +29,5 @@ for seg in result["segments"]:
         "text": seg["text"].strip()
     })
 
+with open("transcript.json", "w") as f:
+    json.dump(segments, f, indent=2)
