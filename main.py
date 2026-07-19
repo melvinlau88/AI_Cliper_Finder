@@ -63,3 +63,8 @@ for m in best_moments:
     print(f"{m['start']}s - {m['end']}s: {m['text']}")
     print("\n")
 
+# Save the best moments
+with open("best_moments.json", "w") as f:
+    json.dump(best_moments, f, indent=2)
+
+print("\n Succussfully saved moments to best_moments.json")
