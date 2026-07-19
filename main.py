@@ -57,6 +57,9 @@ best_moments = segments_by_length[0:NUMBER_OF_CLIPS]
 # Put them back in chronological order
 best_moments = sorted(best_moments, key=lambda seg: seg["start"])
 
+# Print moments for sanity check
 print(f"Picked {len(best_moments)} moments:\n")
 for m in best_moments:
     print(f"{m['start']}s - {m['end']}s: {m['text']}")
+    print("\n")
+
