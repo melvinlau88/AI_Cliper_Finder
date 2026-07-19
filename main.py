@@ -1,4 +1,6 @@
 import subprocess
+import whisper
+import json
 
 '''
 Extracts the audio track from video.mp4 and saves it as audio.wav,
