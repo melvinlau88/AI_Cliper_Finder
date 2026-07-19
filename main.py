@@ -1,6 +1,7 @@
 import subprocess
 import whisper
 import json
+from pathlib import Path
 
 NUMBER_OF_CLIPS = 3
 
@@ -31,9 +32,17 @@ for seg in result["segments"]:
         "text": seg["text"].strip()
     })
 
-with open("transcript.json", "w") as f:
-    json.dump(segments, f, indent=2)
-    segments = json.load(f)
+
+
+
+if Path("transcript.json").exists():
+    print("transcript.json already exists — skipping save so it doesn't get overwritten.")
+else:
+    with open("transcript.json", "w") as f:
+        json.dump(segments, f, indent=2)
+    print("Saved new transcript.json")
+
+
 
 # Sort by video length
 segments_by_length = sorted(
@@ -47,3 +56,7 @@ best_moments = segments_by_length[0:NUMBER_OF_CLIPS]
 
 # Put them back in chronological order
 best_moments = sorted(best_moments, key=lambda seg: seg["start"])
+
+print(f"Picked {len(best_moments)} moments:\n")
+for m in best_moments:
+    print(f"{m['start']}s - {m['end']}s: {m['text']}")
