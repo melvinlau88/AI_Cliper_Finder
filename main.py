@@ -17,7 +17,7 @@ subprocess.run([
 ])
 
 # Load model and transcribe audio to text
-model = whisper.load_model("tiny")
+model = whisper.load_model("base")
 result = model.transcribe("audio.wav")
 
 # List of dictionaries for each chunk 
