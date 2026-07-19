@@ -16,3 +16,8 @@ subprocess.run([
     "audio.wav"             
 ])
 
+# Load model and transcribe audio to text
+model = whisper.load_model("tiny")
+result = model.transcribe("audio.wav")
+
+print(result["text"])
