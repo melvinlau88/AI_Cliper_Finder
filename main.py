@@ -5,6 +5,7 @@ from pathlib import Path
 
 NUMBER_OF_CLIPS = 3
 MODEL_SIZE = "small"
+PADDING = 10
 
 '''
 Extracts the audio track from video.mp4 and saves it as audio.wav,
@@ -85,8 +86,9 @@ Cut each picked moment out of video.mp4 into its own clip file
 clip_number = 1
 
 for moment in best_moments:
-    start = moment["start"]
-    duration = moment["end"] - start
+    start = max(0, moment["start"] - PADDING)
+    end = moment["end"] + PADDING
+    duration = end - start
     output_name = f"clip_{clip_number}.mp4"
 
     subprocess.run([
