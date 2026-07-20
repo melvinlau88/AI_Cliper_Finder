@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 NUMBER_OF_CLIPS = 3
+MODEL_SIZE = "small"
 
 '''
 Extracts the audio track from video.mp4 and saves it as audio.wav,
@@ -23,17 +24,17 @@ subprocess.run([
 Create or load transcript.json
 '''
 
-if Path("transcript.json").exists():
-    print("transcript.json already exists — Loading...")
-    with open("transcript.json") as f:
+TRANSCRIPT_FILE = f"transcript_{MODEL_SIZE}.json"
+
+if Path(TRANSCRIPT_FILE).exists():
+    print(f"{TRANSCRIPT_FILE} already exists — Loading...")
+    with open(TRANSCRIPT_FILE) as f:
         segments = json.load(f)
 
 else:
-    # Load model and transcribe audio to text
-    model = whisper.load_model("base")
+    model = whisper.load_model(MODEL_SIZE)
     result = model.transcribe("audio.wav")
 
-    # List of dictionaries for each chunk 
     segments = []
     for seg in result["segments"]:
         segments.append({
@@ -42,9 +43,11 @@ else:
             "text": seg["text"].strip()
         })
 
-    with open("transcript.json", "w") as f:
+    with open(TRANSCRIPT_FILE, "w") as f:
         json.dump(segments, f, indent=2)
-    print("Saved new transcript.json")
+    print(f"Saved new {TRANSCRIPT_FILE}")
+
+
 
 '''
 Select and save the best clips
