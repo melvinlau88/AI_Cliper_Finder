@@ -2,6 +2,9 @@ import subprocess
 import whisper
 import json
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+from groq import Groq
 
 
 num_clips = input("Number of Clips: ")
@@ -61,32 +64,50 @@ else:
     print(f"Saved new {TRANSCRIPT_FILE}")
 
 '''
-Select and save the best clips
+Select and save the best clips using groq
 '''
 
-# Sort by video length
-segments_by_length = sorted(
-    segments,
-    key=lambda seg: seg["end"] - seg["start"],
-    reverse=True
+load_dotenv()
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+# Turn the segment lists into txt
+transcript_text = "\n".join(
+    f"[{seg['start']}s - {seg['end']}s] {seg['text']}"
+    for seg in segments
 )
 
-# Take the top 'N' longest segments
-best_moments = segments_by_length[0:NUMBER_OF_CLIPS]
+prompt = f"""Here is a timestamped transcript from a video:
 
-# Put them back in chronological order
-best_moments = sorted(best_moments, key=lambda seg: seg["start"])
+{transcript_text}
 
-# Print moments for sanity check
+Pick the {NUMBER_OF_CLIPS} best moments from this transcript for short-form
+video clips (like YouTube Shorts or TikTok). Choose moments that are
+engaging, funny, surprising, or emotionally strong -- not just long ones.
+
+Respond with ONLY a JSON array, no other text, in this exact format:
+[
+  {{"start": 139.0, "end": 143.0, "text": "the spoken text", "reason": "why this is a good clip"}}
+]
+"""
+
+response = client.chat.completions.create(
+    model="llama-3.3-70b-versatile",
+    messages=[{"role": "user", "content": prompt}]
+)
+
+raw_reply = response.choices[0].message.content
+best_moments = json.loads(raw_reply)
+
 print(f"Picked {len(best_moments)} moments:\n")
 for m in best_moments:
     print(f"{m['start']}s - {m['end']}s: {m['text']}")
+    print(f"  Reason: {m['reason']}\n")
 
-# Save the best moments
 with open("best_moments.json", "w") as f:
     json.dump(best_moments, f, indent=2)
 
-print("\nSuccussfully saved moments to best_moments.json")
+print("Successfully saved moments to best_moments.json")
+
 
 '''
 Cut each picked moment out of video.mp4 into its own clip file
