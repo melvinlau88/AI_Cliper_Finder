@@ -5,8 +5,8 @@ from pathlib import Path
 
 
 num_clips = input("Number of Clips: ")
-while num_clips == "" or num_clips.isalpha() or int(num_clips) <= 0:
-    print("Number of Clips must be above 0")
+while not num_clips.isdigit() or int(num_clips) <= 0:
+    print("Number of Clips must be a whole number above 0")
     num_clips = input("Number of Clips: ")
 
 model_size = input("Model Size (tiny, base, small, medium, large): ").lower()
