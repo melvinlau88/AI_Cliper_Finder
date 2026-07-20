@@ -5,3 +5,4 @@ transcript_*.json
 best_moments.json
 *_clip_*.mp4
 .env
+.json
