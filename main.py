@@ -92,9 +92,10 @@ for moment in best_moments:
         "-i", "video.mp4",
         "-ss", str(start),   
         "-t", str(duration),
-        "final_clips"
+        output_name
     ])
 
     print(f"Saved {output_name} ({start}s - {moment['end']}s)")
     clip_number += 1
 
+print("\nDone. Check this folder for your clips.")
