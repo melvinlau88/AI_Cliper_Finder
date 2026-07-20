@@ -48,8 +48,6 @@ else:
         json.dump(segments, f, indent=2)
     print(f"Saved new {TRANSCRIPT_FILE}")
 
-
-
 '''
 Select and save the best clips
 '''
@@ -78,7 +76,6 @@ with open("best_moments.json", "w") as f:
 
 print("\nSuccussfully saved moments to best_moments.json")
 
-
 '''
 Cut each picked moment out of video.mp4 into its own clip file
 '''
@@ -89,7 +86,7 @@ for moment in best_moments:
     start = max(0, moment["start"] - PADDING)
     end = moment["end"] + PADDING
     duration = end - start
-    output_name = f"clip_{clip_number}.mp4"
+    output_name = f"{MODEL_SIZE}_clip_{clip_number}.mp4"
 
     subprocess.run([
         "ffmpeg",
@@ -100,7 +97,6 @@ for moment in best_moments:
         output_name
     ])
 
-    print(f"Saved {output_name} ({start}s - {moment['end']}s)")
     clip_number += 1
 
 print("\nDone. Check this folder for your clips.")
