@@ -3,8 +3,14 @@ import whisper
 import json
 from pathlib import Path
 
-NUMBER_OF_CLIPS = 3
-MODEL_SIZE = "small"
+
+num_clips = input("Number of Clips: ")
+
+model_size = input("Model Size (tiny, base, small, medium, large): ").lower()
+
+
+NUMBER_OF_CLIPS = int(num_clips)
+MODEL_SIZE = model_size
 PADDING = 10
 
 '''
