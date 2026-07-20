@@ -19,6 +19,10 @@ subprocess.run([
     "audio.wav"             
 ])
 
+'''
+Create or load transcript.json
+'''
+
 if Path("transcript.json").exists():
     print("transcript.json already exists — Loading...")
     with open("transcript.json") as f:
@@ -42,7 +46,9 @@ else:
         json.dump(segments, f, indent=2)
     print("Saved new transcript.json")
 
-
+'''
+Select and save the best clips
+'''
 
 # Sort by video length
 segments_by_length = sorted(
@@ -61,10 +67,34 @@ best_moments = sorted(best_moments, key=lambda seg: seg["start"])
 print(f"Picked {len(best_moments)} moments:\n")
 for m in best_moments:
     print(f"{m['start']}s - {m['end']}s: {m['text']}")
-    print("\n")
 
 # Save the best moments
 with open("best_moments.json", "w") as f:
     json.dump(best_moments, f, indent=2)
 
-print("\n Succussfully saved moments to best_moments.json")
+print("\nSuccussfully saved moments to best_moments.json")
+
+
+'''
+Cut each picked moment out of video.mp4 into its own clip file
+'''
+
+clip_number = 1
+
+for moment in best_moments:
+    start = moment["start"]
+    duration = moment["end"] - start
+    output_name = f"clip_{clip_number}.mp4"
+
+    subprocess.run([
+        "ffmpeg",
+        "-y",
+        "-i", "video.mp4",
+        "-ss", str(start),   
+        "-t", str(duration),
+        "final_clips"
+    ])
+
+    print(f"Saved {output_name} ({start}s - {moment['end']}s)")
+    clip_number += 1
+
