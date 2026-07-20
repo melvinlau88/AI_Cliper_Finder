@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 num_clips = input("Number of Clips: ")
-while num_clips == "" or num_clips.isalpha() or int(num_clips) < 0:
+while num_clips == "" or num_clips.isalpha() or int(num_clips) <= 0:
     print("Number of Clips must be above 0")
     num_clips = input("Number of Clips: ")
 
